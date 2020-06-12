@@ -2,25 +2,39 @@
 session_start();
 $name =isset($_SESSION['name']);
 $id =isset($_SESSION['id']);
-include("db_controller.php");    
+
 ?>
 <?php
+include("db_controller.php");
 $id=$_SESSION['id'];
-$result_per_page = 10; 
-$i=1;
-$sql="SELECT * FROM finish_report WHERE user_id=$id";
-$search_result=mysqli_query($conn,$sql);
-$number_of_result=mysqli_num_rows($search_result);   
-$number_of_pages = ceil($number_of_result/$result_per_page);
-if(!isset($_GET['page'])){
-  $page= 1;
+
+if (isset($_GET['page'])) {
+  $page = $_GET['page'];
+} else {
+  $page = 1;
 }
-else{
-  $page =$_GET['page'];
+
+$num_results_on_page = 10;
+$offset = ($page-1) * $num_results_on_page;
+        // Check connection
+if (mysqli_connect_errno()){
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  die();
 }
-$page_first_result =($page-1)*$result_per_page;
-$sql = "SELECT * FROM finish_report WHERE user_id=$id LIMIT " . $page_first_result . ",". $result_per_page;
-$search_result = mysqli_query($conn, $sql);
+
+
+$total_pages_sql = "SELECT COUNT(*) FROM finish_report WHERE user_id=$id";
+$result = mysqli_query($conn,$total_pages_sql);
+$total_pages = mysqli_fetch_array($result)[0];
+$total_rows = ceil($total_pages / $num_results_on_page);
+$sql = "SELECT * FROM finish_report WHERE user_id=$id LIMIT $offset, $num_results_on_page";
+$rows=$offset+1;
+$res_data = mysqli_query($conn,$sql);
+mysqli_close($conn);
+
+
+
+
 ?>
 <html>
 <head>
@@ -62,65 +76,89 @@ $search_result = mysqli_query($conn, $sql);
 
 
                       <form action="finish.php" method="post">
-                       <tr>
-                        <td><label for="id">User ID</label></td>
-                        <td><input type="number" name="id" id="id" hidden="hidden"><?php echo $_SESSION['id']?></td>
-                      </tr>
-                      <tr>
-                        <td><label for="date">Choose Date</label></td>
-                        <td><input type="date" name="date" id="date" required="required"></td>
-                      </tr>
-                      <tr>
-                        <td><label for="eplan">Final Report</label></td>
-                        <td><textarea name="eplan" id="eplan" required="required"></textarea></td>
-                      </tr>
-                      <tr>
-                        <td  colspan="2" align="center"><input type="submit" value="ADD Finish Report"></td>
-                      </tr>
-                    </form>
-                  </table>
+                        <tr>
+                          <td><label for="id">User ID</label></td>
+                          <td><input type="number" name="id" id="id" hidden="hidden"><?php echo $_SESSION['id']?></td>
+                        </tr>
+                        <tr>
+                          <td><label for="date">Choose Date</label></td>
+                          <td><input type="date" name="date" id="date" required="required"></td>
+                        </tr>
+                        <tr>
+                          <td><label for="eplan">Final Report</label></td>
+                          <td><textarea name="eplan" id="eplan" required="required"></textarea></td>
+                        </tr>
+                        <tr>
+                          <td  colspan="2" align="center"><input type="submit" value="ADD Finish Report"></td>
+                        </tr>
+                      </form>
+                    </table>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+
               </div>
-
             </div>
-          </div>
 
 
 
-          <button class="btn btn-info" style="float: right; color:"><a href="index2.php" class="new" style="display: inline; text-align: center;color: white; text-decoration: none;">Go To Plan Report</a></button><br>
-        </form>
-      </div> 
-      <table cellpadding="10" cellspacing="1" border="2"  style="margin-top:20px;">
-        <thead>
-          <tr>
-            <th><strong>#</strong></th>
-            <th><strong>Date</strong></th>         
-            <th><strong>Final Report</strong></th>
+            <button class="btn btn-info" style="float: right; color:"><a href="index.php" class="new" style="display: inline; text-align: center;color: white; text-decoration: none;">Go To Plan Report</a></button><br>
+          </form>
+        </div> 
+        <table cellpadding="10" cellspacing="1" border="2"  style="margin-top:20px;">
+          <thead>
+            <tr>
+              <th><strong>#</strong></th>
+              <th><strong>Date</strong></th>         
+              <th><strong>Final Report</strong></th>
+            </tr>
+          </thead>
+          <tbody>
           </tr>
-        </thead>
-        <tbody>
-        </tr>
-        
-        <?php while($row = mysqli_fetch_array($search_result)):?>
-          
-          <tr>
-            <td><?php echo $i++;?></td>
-            <td><?php echo $row['fdate'];?></td>
-            <td><?php echo $row['work_done'];?></td>
-          </tr>
-        <?php endwhile;?>
-      </tbody>
-    </table>
-    <?php
-    for($page=1;$page<=$number_of_pages;$page++)
-    {
-      echo '<a href ="index.php?page='. $page. '">'.$page. "</a>";
-    }
-    ?>
-    
+
+          <?php while($row = mysqli_fetch_array($res_data)):?>
+            <tr>
+              <td><?php echo $rows++;?></td>
+              <td><?php echo $row['fdate'];?></td>
+              <td><?php echo $row['work_done'];?></td> 
+            </tr>
+          <?php endwhile;?>
+        </tbody>
+      </table>
+
+
+
+      <?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
+        <ul class="pagination">
+         <?php if ($page > 1): ?>
+          <li class="prev"><a href="index.php?page=<?php echo $page-1 ?>">Prev</a></li>
+        <?php endif; ?>
+        <?php if ($page > 3): ?>
+          <li class="start"><a href="index.php?page=1">1</a></li>
+          <li class="dots">...</li>
+        <?php endif; ?>
+
+        <?php if ($page-2 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
+        <?php if ($page-1 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
+
+        <li class="currentpage"><a href="index.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
+
+        <?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
+        <?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
+
+        <?php if ($page < ceil($total_pages / $num_results_on_page)-2): ?>
+          <li class="dots">...</li>
+          <li class="end"><a href="index.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
+        <?php endif; ?>
+
+        <?php if ($page < ceil($total_pages / $num_results_on_page)): ?>
+          <li class="next"><a href="index.php?page=<?php echo $page+1 ?>">Next</a></li>
+        <?php endif; ?>
+      </ul>
+    <?php endif; ?>
+
   </div>
 </div>
 </div>
@@ -129,4 +167,3 @@ $search_result = mysqli_query($conn, $sql);
 
 </body>
 </html>
-

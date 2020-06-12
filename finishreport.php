@@ -2,25 +2,39 @@
 session_start();
 $name =isset($_SESSION['name']);
 $id =isset($_SESSION['id']);
-include("db_controller.php");    
+    
 ?>
 <?php
+include("db_controller.php");
 $id=$_SESSION['id'];
-$result_per_page = 10; 
-$i=1;
-$sql="SELECT * FROM finish_report WHERE user_id=$id";
-$search_result=mysqli_query($conn,$sql);
-$number_of_result=mysqli_num_rows($search_result);   
-$number_of_pages = ceil($number_of_result/$result_per_page);
-if(!isset($_GET['page'])){
-	$page= 1;
-}
-else{
-	$page =$_GET['page'];
-}
-$page_first_result =($page-1)*$result_per_page;
-$sql = "SELECT * FROM finish_report WHERE user_id=$id LIMIT " . $page_first_result . ",". $result_per_page;
-$search_result = mysqli_query($conn, $sql);
+
+ if (isset($_GET['page'])) {
+            $page = $_GET['page'];
+        } else {
+            $page = 1;
+        }
+       
+         $num_results_on_page = 10;
+        $offset = ($page-1) * $num_results_on_page;
+        // Check connection
+        if (mysqli_connect_errno()){
+            echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            die();
+        }
+
+
+        $total_pages_sql = "SELECT COUNT(*) FROM finish_report WHERE user_id=$id";
+        $result = mysqli_query($conn,$total_pages_sql);
+        $total_pages = mysqli_fetch_array($result)[0];
+        $total_rows = ceil($total_pages / $num_results_on_page);
+        $sql = "SELECT * FROM finish_report WHERE user_id=$id LIMIT $offset, $num_results_on_page";
+        $rows=$offset+1;
+        $res_data = mysqli_query($conn,$sql);
+        mysqli_close($conn);
+
+
+
+
 ?>
 <html>
 <head>
@@ -105,32 +119,56 @@ $search_result = mysqli_query($conn, $sql);
 					</thead>
 					<tbody>
 					</tr>
-					
-					<?php while($row = mysqli_fetch_array($search_result)):?>
-						
-						<tr>
-							<td><?php echo $i++;?></td>
-							<td><?php echo $row['fdate'];?></td>
-							<td><?php echo $row['work_done'];?></td>
-							<th>[<a href="delete.php?id=<?php echo $row['id']?>"onClick="return confirm('are you sure you want to delete??');">Delete</a>]
-								[<a href="edit.php?id=<?php echo $row['id']?>">Edit</a>]</th>
-							</tr>
-						<?php endwhile;?>
-					</tbody>
-				</table>
-				<?php
-				for($page=1;$page<=$number_of_pages;$page++)
-				{
-					echo '<a href ="index.php?page='. $page. '">'.$page. "</a>";
-				}
-				?>
-				
-			</div>
-		</div>
-	</div>
+        
+        <?php while($row = mysqli_fetch_array($res_data)):?>
+          
+          <tr>
+            <td><?php echo $rows++;?></td>
+            <td><?php echo $row['fdate'];?></td>
+            <td><?php echo $row['work_done'];?></td> 
+            <td>
+              [<a href="edit.php?uid=<?php echo $row['uid']?>">Edit</a>][<a href="delete.php?uid=<?php echo $row['uid']?>"onClick="return confirm('are you sure you want to delete??');">Delete</a>]</td> 
+            </tr>
+          <?php endwhile;?>
+        </tbody>
+      </table>
+
+   
+
+    <?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
+      <ul class="pagination">
+         <?php if ($page > 1): ?>
+        <li class="prev"><a href="index.php?page=<?php echo $page-1 ?>">Prev</a></li>
+        <?php endif; ?>
+        <?php if ($page > 3): ?>
+        <li class="start"><a href="index.php?page=1">1</a></li>
+        <li class="dots">...</li>
+        <?php endif; ?>
+
+        <?php if ($page-2 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
+        <?php if ($page-1 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
+
+        <li class="currentpage"><a href="index.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
+
+        <?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
+        <?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
+
+        <?php if ($page < ceil($total_pages / $num_results_on_page)-2): ?>
+        <li class="dots">...</li>
+        <li class="end"><a href="index.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
+        <?php endif; ?>
+
+        <?php if ($page < ceil($total_pages / $num_results_on_page)): ?>
+        <li class="next"><a href="index.php?page=<?php echo $page+1 ?>">Next</a></li>
+        <?php endif; ?>
+      </ul>
+      <?php endif; ?>
+      
+    </div>
+  </div>
+</div>
 </div>
 </div> 
 
 </body>
 </html>
-

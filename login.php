@@ -1,37 +1,146 @@
-<style type="text/css">
-     table {  
-      background:#8FC283;  
-      margin-top:150px;  
-      border-radius:5px;  
-}
-th{
-      text-align: right;
-}
-h3{
-      text-align:center;
-}
-</style>
-<table cellpadding="5" cellspacing="10" align="center">
-      <h3>Login</h3>
-      <form method="post" action="validate.php">
-            <tr><th>Name</th>
-                  <td><input type="text" name="name" id="name"></td>
-            </tr>
-            <tr><th>Password</th>
-                  <td><input type="password" name="password" id="pass"></td>
-            </tr>
-            <tr><td colspan="2" align="center"><input type="checkbox" name="remember" value="1">Remember Me</td></tr>
-            <tr><td colspan="2" align="right"><input type="submit" name="login" value="Login"></td></tr>
-      </form>
-</table>
 <?php
-if(isset($_COOKIE['name']) and isset($_COOKIE['pass'])){
-      $name=$_COOKIE['name'];
-      $pass=$_COOKIE['pass'];
-      echo "<script>
-      document.getElementById('name').value='$name';
-      document.getElementById('pass').value='$pass';
-
-      </script>";
+include("db_controller.php");
+  session_start();
+if(isset($_SESSION["admin_name"]))
+{
+ header("location:login.php");
 }
-?>
+if(isset($_POST['login'])){
+  if(!empty($_POST["member_name"]) && !empty($_POST["member_password"])){
+    $name = $_POST['member_name'];
+    $password = md5($_POST['member_password']);
+    $query ="SELECT * FROM user_master WHERE name='$name' and password='$password'";
+    $result=mysqli_query($conn,$query);
+    $row=mysqli_fetch_array($result);
+    if (mysqli_num_rows($result) == 1){
+      if($row['role']==1 && $row['active']==1){
+         if(isset($_POST['remember'])){
+          setcookie('member_login',$name,time()+10*365*24*60*60);
+          setcookie('member_password',md5($password),time()+10*365*24*60*60);
+          $_SESSION["admin_name"] = $name;
+        }
+        else  
+   {  
+    if(isset($_COOKIE["member_login"]))   
+    {  
+     setcookie ("member_login","");  
+    }  
+    if(isset($_COOKIE["member_password"]))   
+    {  
+     setcookie ("member_password","");  
+    }
+
+        }
+         session_start();
+            $_SESSION['name']=$name;
+            $_SESSION['id']=$row['id'];
+        header("location:index.php");
+      }
+      elseif ($row['role']==2 && $row['active']==1) {
+         if(isset($_POST['remember'])){
+          setcookie('name',$name,time()+10*365*24*60*60);
+          setcookie('password',md5($password),time()+10*365*24*60*60);
+           $_SESSION["admin_name"] = $name;
+        }
+        else  
+   {  
+    if(isset($_COOKIE["member_login"]))   
+    {  
+     setcookie ("member_login","");  
+    }  
+    if(isset($_COOKIE["member_password"]))   
+    {  
+     setcookie ("member_password","");  
+    }
+
+        }
+        session_start();
+        $_SESSION['name']=$name;
+        $_SESSION['id']=$row['id'];
+        header("location:index.php");
+      }
+      else{
+        $message = "You are not allowed to login!";
+      }
+    }
+    else{  
+
+              $sql = "SELECT * FROM user_master WHERE name = '" . $name . "'";  
+
+              $res = mysqli_query($conn,$sql);  
+
+              $row= mysqli_fetch_array($res); 
+
+              $uname = $row["name"];
+
+              $pass = $row["password"];
+
+              $pass =md5($pass);
+
+              if ($name != $uname) {
+
+                  $message = "User name does not exist!"; 
+
+              }else if($password != $pass){
+
+                 $message = "Password Wrong!";  
+
+              }
+
+         } 
+
+    }else{
+
+        $message = "Both are Required Fields";
+
+    }
+
+ }
+?> 
+<html>  
+ <head>  
+  <title>REPORT SYSTEM</title>  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+  <style>  
+  body  
+  {  
+   margin:0;  
+   padding:0;  
+   background-color:#f1f1f1;  
+  }  
+        .box  
+        {  
+   width:500px;  
+   padding:20px;  
+   background-color:#fff;  
+  }  
+  </style>  
+ </head>  
+ <body>     
+
+<div class="container box">  
+   <form action="" method="post" id="frmLogin"> 
+    <h3 align="center">PHP Login script with Remember me Login Details</h3><br />
+    <div class="text-danger"><?php if(isset($message)) { echo $message; } ?></div>  
+    <div class="form-group">  
+     <label for="login">Username</label>  
+     <input name="member_name" type="text" value="<?php if(isset($_COOKIE["member_login"])) { echo $_COOKIE["member_login"]; } ?>" class="form-control" />  
+    </div>  
+    <div class="form-group">  
+     <label for="password">Password</label>  
+     <input name="member_password" type="password"class="form-control" />   
+    </div>  
+    <div class="form-group">  
+     <input type="checkbox" name="remember" <?php if(isset($_COOKIE["member_login"])) { ?> checked <?php } ?> />  
+     <label for="remember-me">Remember me</label>  
+    </div>  
+    <div class="form-group">  
+     <div><input type="submit" name="login" value="Login" class="btn btn-success"></span></div>  
+    </div>   
+   </form>  
+   <br />  
+  </div>  
+ </body>  
+ </html>

@@ -1,11 +1,7 @@
 <?php
 session_start();
--	session_destroy();
-if(isset($_COOKIE['name']) and isset($_COOKIE['pass'])){
-	$name=$_COOKIE['name'];
-	$pass=$_COOKIE['pass'];
-	setcookie('name',$name,time()-1);
-	setcookie('passord',$pass,time()-1);
-}
+$_SESSION["admin_name"] ="";
+
+session_destroy();
 header("location:login.php");
 ?>
