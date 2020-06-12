@@ -127,7 +127,7 @@ $id=$_SESSION['id'];
             <td><?php echo $row['fdate'];?></td>
             <td><?php echo $row['work_done'];?></td> 
             <td>
-              [<a href="edit.php?uid=<?php echo $row['uid']?>">Edit</a>][<a href="delete.php?uid=<?php echo $row['uid']?>"onClick="return confirm('are you sure you want to delete??');">Delete</a>]</td> 
+              [<a href="editfinish.php?uid=<?php echo $row['uid']?>">Edit</a>][<a href="deletefinish.php?uid=<?php echo $row['uid']?>"onClick="return confirm('are you sure you want to delete??');">Delete</a>]</td> 
             </tr>
           <?php endwhile;?>
         </tbody>
@@ -138,28 +138,28 @@ $id=$_SESSION['id'];
     <?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
       <ul class="pagination">
          <?php if ($page > 1): ?>
-        <li class="prev"><a href="index.php?page=<?php echo $page-1 ?>">Prev</a></li>
+        <li class="prev"><a href="finishreport.php?page=<?php echo $page-1 ?>">Prev</a></li>
         <?php endif; ?>
         <?php if ($page > 3): ?>
-        <li class="start"><a href="index.php?page=1">1</a></li>
+        <li class="start"><a href="finishreport.php?page=1">1</a></li>
         <li class="dots">...</li>
         <?php endif; ?>
 
-        <?php if ($page-2 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
-        <?php if ($page-1 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
+        <?php if ($page-2 > 0): ?><li class="page"><a href="finishreport.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
+        <?php if ($page-1 > 0): ?><li class="page"><a href="finishreportfinishreport.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
 
-        <li class="currentpage"><a href="index.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
+        <li class="currentpage"><a href="finishreport.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
 
-        <?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
-        <?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
+        <?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="finishreport.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
+        <?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="finishreport.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
 
         <?php if ($page < ceil($total_pages / $num_results_on_page)-2): ?>
         <li class="dots">...</li>
-        <li class="end"><a href="index.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
+        <li class="end"><a href="finishreport.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
         <?php endif; ?>
 
         <?php if ($page < ceil($total_pages / $num_results_on_page)): ?>
-        <li class="next"><a href="index.php?page=<?php echo $page+1 ?>">Next</a></li>
+        <li class="next"><a href="finishreport.php?page=<?php echo $page+1 ?>">Next</a></li>
         <?php endif; ?>
       </ul>
       <?php endif; ?>
