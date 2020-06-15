@@ -24,7 +24,7 @@ if(isset($_POST['uname']) && isset($_POST['pass'])){
 	
 	else{
 
-		$sql = "INSERT INTO user_master (name, password,role,active,created_date,updated_date) VALUES ('$uname','$pass','$role','$active','now()','now()')";
+		$sql = "INSERT INTO user_master (name, password,role,active,created_date,updated_date) VALUES ('$uname','$pass','$role','$active',now(),now())";
 		mysqli_query($dbhandle, $sql);
 		header("location: login.php");
 	}

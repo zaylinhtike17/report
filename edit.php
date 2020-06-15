@@ -29,7 +29,7 @@ header("location: index.php");
 		</tr>
 		<tr>
 			<td><label for="userid">ID</label></td>
-			<td><input type="number" name="userid" id="userid" value="<?php echo $row['uid']?>"></td></td>
+			<td><input type="number" name="userid" id="userid" hidden="hidden"><?php echo $row['uid']?></td></td>
 		</tr>
 		<tr>
 			<td><label for="date">Choose Date</label></td>
