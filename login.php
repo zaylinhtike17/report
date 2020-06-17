@@ -124,7 +124,7 @@ else{
 
   <div class="container box">  
    <form action="" method="post" id="frmLogin"> 
-    <h3 align="center">PHP Login script with Remember me Login Details</h3><br />
+    <h3 align="center">Login</h3><br />
     <div class="text-danger"><?php if(isset($message)) { echo $message; } ?></div>  
     <div class="form-group">  
      <label for="login">Username</label>  
