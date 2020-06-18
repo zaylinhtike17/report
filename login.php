@@ -1,12 +1,11 @@
 <?php
 include("db_controller.php");
-session_start();
-if(isset($_SESSION["admin_name"]))
-{
- header("location:login.php");
-}
-if(isset($_POST['login'])){
+ session_start();
 
+
+
+
+if(isset($_POST['login'])){
   if(!empty($_POST["member_name"]) && !empty($_POST["member_password"])){
     $name = $_POST['member_name'];
     $password = md5($_POST['member_password']);
@@ -20,6 +19,7 @@ if(isset($_POST['login'])){
         setcookie('member_password',md5($password),time()+10*365*24*60*60);
         $_SESSION["admin_name"] = $name;
       }
+
       else  
       {  
         if(isset($_COOKIE["member_login"]))   
@@ -35,6 +35,7 @@ if(isset($_POST['login'])){
      session_start();
      $_SESSION['name']=$name;
      $_SESSION['id']=$row['id'];
+     
      header("location:index.php");
    }
    elseif ($row['role']==2 && $row['active']==1) {
@@ -42,6 +43,7 @@ if(isset($_POST['login'])){
       setcookie('name',$name,time()+10*365*24*60*60);
       setcookie('password',md5($password),time()+10*365*24*60*60);
       $_SESSION["admin_name"] = $name;
+
     }
     else  
     {  
@@ -58,7 +60,7 @@ if(isset($_POST['login'])){
    session_start();
    $_SESSION['name']=$name;
    $_SESSION['id']=$row['id'];
-   header("location:index.php");
+   header("location:index2.php");
  }
  else{
   $message = "You are not allowed to login!";

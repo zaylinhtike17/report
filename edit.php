@@ -1,5 +1,5 @@
 <?php
-session_start();
+include ("header.php"); 
 $name =isset($_SESSION['name']);
 $id =isset($_SESSION['id']);
 include("db_controller.php");
@@ -20,9 +20,17 @@ mysqli_query($conn, $sql);
 header("location: index.php"); 
 }
 ?>
-<table>
-
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
 	<form action="" method="post">
+	<table align="center" style="width:50% ;height:50%; margin-top:50px; margin-left: 300px;" >
+
 		<tr>
 			<td><label for="id">User ID</label></td>
 			<td><input type="number" name="id" id="id" hidden="hidden"><?php echo $_SESSION['id']?></td>
@@ -37,22 +45,17 @@ header("location: index.php");
 		</tr>
 		<tr>
 			<td><label for="mplan">Morning Plan</label></td>
-			<td><textarea name="mplan" id="mplan" ><?php echo $row['morning_plan']?></textarea></td>
+			<td><textarea name="mplan" id="mplan" rows="3" cols="45"><?php echo $row['morning_plan']?></textarea></td>
 		</tr>
 
 		<tr>
 			<td><label for="eplan">Evening Plan</label></td>
-			<td><textarea name="eplan" id="eplan" ><?php echo $row['evening_plan']?></textarea></td>
+			<td><textarea name="eplan" id="eplan" rows="3" cols="45"><?php echo $row['evening_plan']?></textarea></td>
 		</tr>
-		<tr>
-			<td  colspan="2" align="center"><input type="submit" name="submit" value="Update PLAN"></td>
-		</tr>
-	</form>
-</table>
-<style>
-	form label{
 		
-		margin-top: 8px; 
-		padding: 5px;
-	}
-</style>
+</table>
+			<button type="submit" name="submit"  class="btn btn-info" style="margin-left: 470px;" value="Update Now">Update Plan</button>	
+	</form>
+</div>
+</body>
+</html>
