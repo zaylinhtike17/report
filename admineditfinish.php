@@ -20,7 +20,7 @@ if(!empty($_POST["submit"])) {
 	$sql = "UPDATE  finish_report set  user_id='$id',fdate='$date',work_done='$eplan' ,updated_date=now() WHERE uid=$uid";
 	
 	mysqli_query($conn, $sql);
-	header("location: finishreport.php"); 
+	header("location: adminfinishreport.php"); 
 }
 ?>
 <html>

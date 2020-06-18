@@ -1,8 +1,10 @@
 <?php
 session_start();
+$auth =isset($_SESSION['auth']);
 $name =isset($_SESSION['name']);
 $id =isset($_SESSION['id']);    
 ?>
+<?php if ($auth) {?>
 <html>
 <head>
   <title>PHP CRUD with Search and Pagination</title>
@@ -38,3 +40,4 @@ $id =isset($_SESSION['id']);
     margin:10px 30px 10px 30px;
   }
 </style>
+<?php }?>

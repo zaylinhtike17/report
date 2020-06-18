@@ -1,4 +1,5 @@
 <?php
+
 $dbhost = "localhost";
 $dbuser = "root";
 $dbpass = "";
@@ -10,9 +11,10 @@ session_start();
 
 $id =$_SESSION['id'];
 $date =$_POST['date'];
+$mplan =$_POST['mplan'];
 $eplan =$_POST['eplan'];
-$sql = "INSERT INTO finish_report (user_id, fdate,work_done,created_date,updated_date) VALUES ('$id','$date','$eplan',now(),now())";
+$sql = "INSERT INTO plan_report (user_id, ndate,morning_plan,evening_plan,created_date,updated_date) VALUES ('$id','$date','$mplan','$eplan',now(),now())";
 mysqli_query($dbhandle, $sql);
-header("location: finishreport.php");
+header("location: adminpanel.php");
 ?>
 

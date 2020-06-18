@@ -25,11 +25,11 @@ if (mysqli_connect_errno()){
 }
 
 
-$total_pages_sql = "SELECT COUNT(*) FROM plan_report WHERE user_id=$id";
+$total_pages_sql = "SELECT COUNT(*) FROM plan_report WHERE ndate";
 $result = mysqli_query($conn,$total_pages_sql);
 $total_pages = mysqli_fetch_array($result)[0];
 $total_rows = ceil($total_pages / $num_results_on_page);
-$sql = "SELECT * FROM plan_report WHERE user_id=$id ORDER BY ndate DESC LIMIT $offset, $num_results_on_page" ;
+$sql = "SELECT * FROM plan_report WHERE ndate ORDER BY created_date DESC LIMIT $offset, $num_results_on_page" ;
 $rows=$offset+1;
 $res_data = mysqli_query($conn,$sql);
 mysqli_close($conn);
@@ -53,7 +53,7 @@ mysqli_close($conn);
 
         <!-- Trigger the modal with a button -->
         <button type="button"  class="btn btn-info" data-toggle="modal" data-target="#myModal">ADD NEW</button>
-        <button class="btn btn-info" style="float: right; color:"><a href="finishreport.php" class="new" style="display: inline; text-align: center;color: white; text-decoration: none;">Go To Finish Report</a></button><br>
+        <button class="btn btn-info" style="float: right; color:"><a href="adminfinishreport.php" class="new" style="display: inline; text-align: center;color: white; text-decoration: none;">Go To Finish Report</a></button><br>
         <div class="card-title">
          <div class="card-body" >
           <!-- Modal -->
@@ -71,7 +71,7 @@ mysqli_close($conn);
 
 
 
-                  <form action="add.php" method="post">
+                  <form action="adminadd.php" method="post">
                     <table cellpadding="50" cellspacing="50">
                      <tr>
                       <td><label for="uid">User ID</label></td>
@@ -107,6 +107,7 @@ mysqli_close($conn);
     <thead>
       <tr>
         <th><strong>#</strong></th>
+        <th><strong>User ID</strong></th>
         <th><strong>Date</strong></th>
         <th><strong>Morning Plan Details</strong></th>          
         <th><strong>Evening Plan Details</strong></th>
@@ -121,11 +122,12 @@ mysqli_close($conn);
 
       <tr>
         <td><?php echo $rows++;?></td>
+        <td><?php echo $row['user_id'];?></td>
         <td><?php echo $row['ndate'];?></td>
         <td style="width:35%;"><?php echo $row['morning_plan'];?></td>
         <td style="width:35%;"><?php echo $row['evening_plan'];?></td>
         <td>
-          [<a href="edit.php?uid=<?php echo $row['uid']?>">Edit</a>][<a href="delete.php?uid=<?php echo $row['uid']?>"onClick="return confirm('are you sure you want to delete??');">Delete</a>]</td>
+          [<a href="adminedit.php?uid=<?php echo $row['uid']?>">Edit</a>][<a href="adminpaneldelete.php?uid=<?php echo $row['uid']?>"onClick="return confirm('are you sure you want to delete??');">Delete</a>]</td>
 
         </tr>
       <?php endwhile;?>
@@ -137,28 +139,28 @@ mysqli_close($conn);
   <?php if (ceil($total_pages / $num_results_on_page) > 0): ?>
     <ul class="pagination">
      <?php if ($page > 1): ?>
-      <li class="prev"><a href="index.php?page=<?php echo $page-1 ?>">Prev</a></li>
+      <li class="prev"><a href="adminpanel.php?page=<?php echo $page-1 ?>">Prev</a></li>
     <?php endif; ?>
     <?php if ($page > 3): ?>
-      <li class="start"><a href="index.php?page=1">1</a></li>
+      <li class="start"><a href="adminpanel.php?page=1">1</a></li>
       <li class="dots">...</li>
     <?php endif; ?>
 
-    <?php if ($page-2 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
-    <?php if ($page-1 > 0): ?><li class="page"><a href="index.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
+    <?php if ($page-2 > 0): ?><li class="page"><a href="adminpanel.php?page=<?php echo $page-2 ?>"><?php echo $page-2 ?></a></li><?php endif; ?>
+    <?php if ($page-1 > 0): ?><li class="page"><a href="adminpanel.php?page=<?php echo $page-1 ?>"><?php echo $page-1 ?></a></li><?php endif; ?>
 
-    <li class="currentpage"><a href="index.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
+    <li class="currentpage"><a href="adminpanel.php?page=<?php echo $page ?>"><?php echo $page ?></a></li>
 
-    <?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
-    <?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="index.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
+    <?php if ($page+1 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="adminpanel.php?page=<?php echo $page+1 ?>"><?php echo $page+1 ?></a></li><?php endif; ?>
+    <?php if ($page+2 < ceil($total_pages / $num_results_on_page)+1): ?><li class="page"><a href="adminpanel.php?page=<?php echo $page+2 ?>"><?php echo $page+2 ?></a></li><?php endif; ?>
 
     <?php if ($page < ceil($total_pages / $num_results_on_page)-2): ?>
       <li class="dots">...</li>
-      <li class="end"><a href="index.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
+      <li class="end"><a href="adminpanel.php?page=<?php echo ceil($total_pages / $num_results_on_page) ?>"><?php echo ceil($total_pages / $num_results_on_page) ?></a></li>
     <?php endif; ?>
 
     <?php if ($page < ceil($total_pages / $num_results_on_page)): ?>
-      <li class="next"><a href="index.php?page=<?php echo $page+1 ?>">Next</a></li>
+      <li class="next"><a href="adminpanel.php?page=<?php echo $page+1 ?>">Next</a></li>
     <?php endif; ?>
   </ul>
 <?php endif; ?>
@@ -184,7 +186,7 @@ mysqli_close($conn);
   }
 </style>
 <?php } else {?>
-<html>  
+  <html>  
 <head>  
   <title>REPORT SYSTEM</title>  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>

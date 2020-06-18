@@ -1,10 +1,6 @@
 <?php
 include("db_controller.php");
  session_start();
-
-
-
-
 if(isset($_POST['login'])){
   if(!empty($_POST["member_name"]) && !empty($_POST["member_password"])){
     $name = $_POST['member_name'];
@@ -13,6 +9,7 @@ if(isset($_POST['login'])){
     $result=mysqli_query($conn,$query);
     $row=mysqli_fetch_array($result);
     if (mysqli_num_rows($result) == 1){
+      $_SESSION['auth']=true;
       if($row['role']==1 && $row['active']==1){
        if(isset($_POST['remember'])){
         setcookie('member_login',$name,time()+10*365*24*60*60);
@@ -36,7 +33,7 @@ if(isset($_POST['login'])){
      $_SESSION['name']=$name;
      $_SESSION['id']=$row['id'];
      
-     header("location:index.php");
+     header("location:adminpanel.php");
    }
    elseif ($row['role']==2 && $row['active']==1) {
      if(isset($_POST['remember'])){
@@ -60,7 +57,7 @@ if(isset($_POST['login'])){
    session_start();
    $_SESSION['name']=$name;
    $_SESSION['id']=$row['id'];
-   header("location:index2.php");
+   header("location:index.php");
  }
  else{
   $message = "You are not allowed to login!";
@@ -110,7 +107,7 @@ else{
   <style>  
     body  
     {  
-     margin:0;  
+     margin:150px;  
      padding:0;  
      background-color:#f1f1f1;  
    }  
