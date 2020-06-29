@@ -29,7 +29,7 @@ $total_pages_sql = "SELECT COUNT(*) FROM plan_report WHERE ndate";
 $result = mysqli_query($conn,$total_pages_sql);
 $total_pages = mysqli_fetch_array($result)[0];
 $total_rows = ceil($total_pages / $num_results_on_page);
-$sql = "SELECT * FROM plan_report WHERE ndate ORDER BY created_date DESC LIMIT $offset, $num_results_on_page" ;
+$sql = "SELECT * FROM plan_report WHERE ndate ORDER BY ndate DESC LIMIT $offset, $num_results_on_page" ;
 $rows=$offset+1;
 $res_data = mysqli_query($conn,$sql);
 mysqli_close($conn);
@@ -74,8 +74,7 @@ mysqli_close($conn);
                   <form action="adminadd.php" method="post">
                     <table cellpadding="50" cellspacing="50">
                      <tr>
-                      <td><label for="uid">User ID</label></td>
-                      <td><input type="number" name="uid" id="uid" hidden="hidden"><?php echo $_SESSION['id']?></td>
+                      <td><input type="hidden" name="uid" id="uid" value="<?php echo $_SESSION['id']?>"></td>
                     </tr>
                     <tr>
                       <td><label for="date">Choose Date</label></td>

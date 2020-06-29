@@ -14,10 +14,10 @@ $id =isset($_SESSION['id']);
 </head>
 <body>
 
-	<h2 align="center">Reporting system</h2>
+	<h2 align="center">Reporting system</h2><br>
   <div class="conatiner">
-        <h3 style="display: inline;">Plan Report Form</h3><br>
-        <label class="label" for="uname" style="font-size: 20px; color: blue;"> Profile:</label>
+        <h4 style="display: inline; margin:40px">Finish Report Form</h4><br>
+        <label class="label" for="uname" style="font-size: 20px; color: blue; margin:10px 1px 10px 30px;"> Profile:</label>
         <span style="font-size: 25px; color: blue;text-align:left;"><?php echo $_SESSION['name']?></span>
         <a href="logout.php" class="new" style="text-align: center; float: right;font-size: 15px; margin:10px 50px 10px 5px;">LOG OUT</a>
         <hr style="background-color:black;height: 3px;">
@@ -32,9 +32,6 @@ $id =isset($_SESSION['id']);
 <style type="text/css">
   .modal-body tr, td {
     padding: 3px;
-  }
-  h3{
-    margin:10px 30px 10px 40px;
   }
   label{
     margin:10px 30px 10px 30px;

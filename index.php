@@ -172,6 +172,7 @@ mysqli_close($conn);
   .pagination{
     padding:10px;
     margin:0px 150px 0px 500px;
+
   }
   .modal-body tr, td {
     padding: 3px;

@@ -77,10 +77,7 @@ mysqli_close($conn);
 											<div class="modal-body">
 												<form action="adminfinish.php" method="post">
 													 <table cellpadding="50" cellspacing="50">
-													<tr>
-														<td><label for="id">User ID</label></td>
-														<td><input type="number" name="id" id="id" hidden="hidden"><?php echo $_SESSION['id']?></td>
-													</tr>
+													<input type="hidden" name="id" id="id" hidden="<?php echo $_SESSION['id']?>">
 													<tr>
 														<td><label for="date">Choose Date</label></td>
 														<td><input type="date" name="date" id="date" required="required"></td>
